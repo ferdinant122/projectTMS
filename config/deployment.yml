@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: python-example
+  name: sampleapp
   labels:
-    app: python-example
+    app: sampleapp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: python-example
+      app: sampleapp
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -17,10 +17,10 @@ spec:
   template:
     metadata:
       labels:
-        app: python-example
+        app: sampleapp
     spec:
       containers:
-      - name: python-example
+      - name: sampleapp
         image: <IMAGE>
         ports:
         - containerPort: 80
@@ -33,7 +33,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: python-example-service
+  name: sampleapp-service
 spec:
   type: LoadBalancer
   ports:
@@ -42,4 +42,4 @@ spec:
       port: 80
       targetPort: 80
   selector:
-    app: python-example
+    app: sampleapp
