@@ -1,10 +1,11 @@
-FROM python:3.8-alpine
-COPY . /app
-WORKDIR /app
-RUN \
- apk add --no-cache bash && \
- apk add --no-cache postgresql-libs && \
- apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev
+FROM python:3.10.4-alpine3.15
+
+WORKDIR /flask_k8s
+
+COPY requirements.txt requirements.txt
+
 RUN pip install -r requirements.txt
-EXPOSE 5000
-CMD ["/bin/bash", "entrypoint.sh"]
+
+COPY . .
+
+CMD ["python", "-m", "flask", "run", "--host=0.0.0.0"]

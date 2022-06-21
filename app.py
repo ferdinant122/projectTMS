@@ -1,32 +1,45 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, render_template, url_for
 
 app = Flask(__name__)
 
-app.config.from_pyfile('config.cfg')
 
-db = SQLAlchemy()
-db.init_app(app)
+posts = [
+    {
+        'author': 'Randil Tennskoon',
+        'title': 'First Blog Post',
+        'content': 'First Blog Content',
+        'date_posted': 'March 21st, 2021'
+    },
+    {
+        'author': 'Kasun Bandara',
+        'title': 'Second Blog Post',
+        'content': 'Second Blog Content',
+        'date_posted': 'April 12th, 2021'
+    }
+]
 
-class User(db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String())
-    surname = db.Column(db.String())
+@app.route('/')
+def home():
+    return render_template('index.html', posts=posts)
 
-@app.route('/test')
-def test():
-    return 'Hello World! I am from docker!'
 
-@app.route('/test_db')
-def test_db():
-    db.create_all()
-    db.session.commit()
-    user = User.query.first()
-    if not user:
-        u = User(name='Mudasir', surname='Younas')
-        db.session.add(u)
-        db.session.commit()
-    user = User.query.first()
-    return "User '{} {}' is from database".format(user.name, user.surname)
+@app.route('/login')
+def login():
+    return render_template('login.html', title='Login')
+
+
+@app.route('/register')
+def register():
+    return render_template('register.html', title='Register')
+
+
+@app.route('/view')
+def view():
+    return render_template('view.html', title='View')
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
 
