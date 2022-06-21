@@ -21,7 +21,7 @@ spec:
           image: registry.digitalocean.com/bee-do-registry/flask-app:1.0.0
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8000
+            - containerPort: 8888
 
 ---
 apiVersion: v1
@@ -30,9 +30,9 @@ metadata:
   name: todoapp
 spec:
   ports:
-  - port: 8000
+  - port: 8888
     protocol: TCP
-    targetPort: 8000
+    targetPort: 8888
   selector:
     app: todoapp
   type: LoadBalancer
