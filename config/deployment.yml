@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: flask
-        image: lvthillo/python-flask-docker
+        image: digitalocean/sampleapp
         ports:
         - containerPort: 8080
 ---
@@ -29,7 +29,7 @@ metadata:
 spec:
   containers:
   - name: flask
-    image: lvthillo/python-flask-docker:latest
+    image: digitalocean/sampleapp:latest
     ports:
     - containerPort: 8080
 
