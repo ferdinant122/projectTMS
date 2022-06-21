@@ -1,45 +1,50 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sampleapp
+  name: flask-dep
   labels:
-    app: sampleapp
+    app: flask-helloworld
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      app: sampleapp
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-  minReadySeconds: 5
+      app: flask-helloworld
   template:
     metadata:
       labels:
-        app: sampleapp
+        app: flask-helloworld
     spec:
       containers:
-      - name: sampleapp
-        image: <IMAGE>
+      - name: flask
+        image: digitalocean/flask-helloworld:latest
         ports:
-        - containerPort: 9090
-        resources:
-          requests:
-            cpu: 100m
-          limits:
-            cpu: 100m
-#---
-#apiVersion: v1
-#kind: Service
-#metadata:
-#  name: sampleapp-service
-#spec:
-#  type: LoadBalancer
-#  ports:
-#    - name: http
-#      protocol: TCP
-#     port: 9090
-#     targetPort: 9090
-# selector:
-#   app: sampleapp
+        - containerPort: 5000
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: flask-pod
+  labels:
+    app: flask-helloworld
+spec:
+  containers:
+  - name: flask
+    image: digitalocean/flask-helloworld:latest
+    ports:
+    - containerPort: 5000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-svc
+  labels:
+    app: flask-helloworld
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 5000
+    protocol: TCP
+  selector:
+    app: flask-helloworld
