@@ -37,7 +37,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: flask-svc
+  name: flask
   labels:
     app: flask
 spec:
