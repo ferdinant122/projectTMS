@@ -10,12 +10,7 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'config/**'
-      - 'app.py'
-      - 'Dockerfile'
-      - '.github/workflows/**'
-
+      
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel.
 jobs:
   # This workflow contains a single job called "build".
@@ -48,11 +43,11 @@ jobs:
 
     # Deploy to DigitalOCcean Kubernetes.
     - name: Update deployment file
-      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|${{ secrets.REGISTRY_NAME }}/todoapp:'${TAG}'|' $GITHUB_WORKSPACE/config/deployment.yml
+      run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|${{ secrets.REGISTRY_NAME }}/todoapp:'${TAG}'|' $GITHUB_WORKSPACE/kube/app.yaml
 
     - name: Save DigitalOcean kubeconfig with short-lived credentials
       run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ secrets.CLUSTER_NAME }}
-    
+
     # If you haven't already integrated with your registry and only want workloads in a particular namespace to be able to pull 
     # from your registry, uncomment the next two commands.
     #- name: Upload credentials of your registry to your DigitalOcean Kubernetes cluster
@@ -60,9 +55,9 @@ jobs:
       
     #- name: Reference the secret you just uploaded as an imagePullSecrets
     #  run: "kubectl patch serviceaccount default -p '{\"imagePullSecrets\": [{\"name\": \"registry-<your-registry-name>`\"}]}'"
-
+    - name: Store DO authentication token as a secret in cluster
+      run: doctl registry kubernetes-manifest | kubectl apply -f -
+    
     - name: Deploy to DigitalOcean Kubernetes
-      run: kubectl apply -f $GITHUB_WORKSPACE/config/deployment.yml | kubectl apply -f $GITHUB_WORKSPACE/config/service.yml
+      run: kubectl apply -f $GITHUB_WORKSPACE/kube/app.yaml 
 
-    - name: Verify deployment
-      run: kubectl rollout status deployment/todoapp
