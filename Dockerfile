@@ -1,12 +1,8 @@
-FROM python:3-alpine
-
+FROM python:3.6
+LABEL maintainer="lorenz.vanthillo@gmail.com"
+COPY . /app
 WORKDIR /app
-
-COPY requirements.txt .
 RUN pip install -r requirements.txt
-
-COPY . .
-
-EXPOSE 5000
-
-CMD ["python", "app.py"]
+EXPOSE 8080
+ENTRYPOINT ["python"]
+CMD ["app/app.py"]
