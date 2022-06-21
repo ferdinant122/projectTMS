@@ -1,27 +1,45 @@
-# ToDo Application
+# Part 2: Flask App runs on Kubernetes
 
-[This is a code that comes along with great tutorial](https://medium.com/@bhavaniravi/build-your-1st-python-web-app-with-flask-b039d11f101c)
+In this part the Flask App runs on Kubernetes
 
-## Using the Frontend
+## Installation
 
-1. Open `index.html` file in a browser.
-2. Run `python app/app.py` in the terminal.
-3. That's it! You can add create edit delete items via UI
+- You need to have Minikube installed on your local machone to run a Kubernetes cluster locally. Check this [blog post](https://medium.com/gitconnected/getting-started-with-minikube-as-your-local-kubernetes-cluster-cfebf87abc39) to install minikube on your local machine.
 
-## Using React Frontned
+### 1. Apply the Kubernetes Deployment
+```
+kubectl apply -f flask-k8s-deployment.yml
+```
 
-The above frontend is built with plain JS, for modern web apps most people use React. 
+### 2. Apply the Kubernetes Service
+```
+kubectl apply -f flask-k8s-service.yml
+```
 
-In this tutorial I have complied the [React Frontend](https://medium.com/bhavaniravi/building-your-1st-webapp-integrating-with-frontend-d9f1a8bf21a5) with Flask.
+### 3. Check pod runs properly:
+```
+kubectl get pods
+kubctl get all
+kubectl describe pod <pod-name>
+```
 
-## To Run App in Docker
+### 4. Get the IP via minikube
+```
+minikube service --all
+```
 
-1. Checkout `Dockerfile`. It is created by [following this tutorial](https://runnable.com/docker/python/dockerize-your-flask-application).
-2. I have changed it to accomodate latest version of ununtu and `python3`
-3. To build docker image `docker build -t todo-flask:latest .`
-4. To run the docker container `docker run -it -p 5000:8888 todo-flask `
+### 5. Click the link with the `ip_address:port` in the browser to open the app.
 
-## To Run App in Kubernetes 
+### 6. Open minikube dashboard
+```
+minikube dashboard
+```
+![](https://github.com/randiltennakoon/flask_k8s/blob/run_on_kubernetes/kubernetes_dashboard.png?raw=true)
 
-Follow the tutorial - https://bhavaniravi.com/blog/kubernetes-101-deploy-apps-in-kubernetes/
+
+
+
+
+
+
 
