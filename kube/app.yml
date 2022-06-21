@@ -29,6 +29,6 @@ spec:
     app: flask-k8s
   ports:
     - protocol: "TCP"
-      port: 6000
+      port: 8000
       targetPort: 5000
   type: LoadBalancer
