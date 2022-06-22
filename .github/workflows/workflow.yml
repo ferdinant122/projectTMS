@@ -7,6 +7,8 @@ name: Build, push, and deploy
 # Controls when the action will run.
 on:
   # Triggers the workflow on push request on the main branch for changes in the specified paths.
+  pull_request:
+  
   push:
     branches:
       - main
@@ -19,8 +21,8 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel.
 jobs:
-  # This workflow contains a single job called "build".
-  build:
+  # This workflow contains a single job called "checks_and_connec".
+  checks_and_connect:
     # The type of runner that the job will run on.
     runs-on: ubuntu-latest
     
@@ -30,16 +32,25 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it.
     - name: Checkout master
       uses: actions/checkout@main
-
+    
+    # Cheks with pylint
+    - name: GitHub Action for pylint
+      uses: cclauss/GitHub-Action-for-pylint@0.7.0
+      
     # Install doctl.
     - name: Install doctl
       uses: digitalocean/action-doctl@v2
       with:
         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+  
+  build_and_push:
+    # The type of runner that the job will run on.
+    runs-on: ubuntu-latest   
     
+    steps:
     # Build a Docker image of your application in your registry and tag the image with the $GITHUB_SHA.
     - name: Build container image
-      run: docker build -t ${{ secrets.REGISTRY_NAME }}/python-example:$(echo $GITHUB_SHA | head -c7) .
+      run: docker build -t ${{ secrets.REGISTRY_NAME }}/python-example:prod .
 
     - name: Log in to DigitalOcean Container Registry with short-lived credentials
       run: doctl registry login --expiry-seconds 1200
@@ -48,20 +59,17 @@ jobs:
       run: docker push ${{ secrets.REGISTRY_NAME }}/python-example:$(echo $GITHUB_SHA | head -c7)
 
     # Deploy to DigitalOCcean Kubernetes.
+  deploy_on_DO:
+    # The type of runner that the job will run on.
+    runs-on: ubuntu-latest   
+    
+    steps:
     - name: Update deployment file
       run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|${{ secrets.REGISTRY_NAME }}/python-example:'${TAG}'|' $GITHUB_WORKSPACE/config/deployment.yml
 
     - name: Save DigitalOcean kubeconfig with short-lived credentials
       run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ secrets.CLUSTER_NAME_PROD }}
     
-    # If you haven't already integrated with your registry and only want workloads in a particular namespace to be able to pull 
-    # from your registry, uncomment the next two commands.
-    #- name: Upload credentials of your registry to your DigitalOcean Kubernetes cluster
-    #  run: doctl registry kubernetes-manifest | kubectl apply -f -
-      
-    #- name: Reference the secret you just uploaded as an imagePullSecrets
-    #  run: "kubectl patch serviceaccount default -p '{\"imagePullSecrets\": [{\"name\": \"registry-<your-registry-name>`\"}]}'"
-
     - name: Deploy to DigitalOcean Kubernetes
       run: kubectl apply -f $GITHUB_WORKSPACE/config/deployment.yml
 
