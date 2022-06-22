@@ -1,4 +1,4 @@
-FROM python:alpine as builder
+FROM python:3.8 as builder
 
 # uWSGI needs a c-compiler, which results in a container of ~340 mb
 RUN apk add --no-cache linux-headers build-base
