@@ -1,45 +1,61 @@
 apiVersion: apps/v1
 kind: Deployment
+# A deployment creates a replicaset from pods
 metadata:
-  name: python-example
+  name: frontend
   labels:
-    app: python-example
+    app: flask
+    tier: frontend
 spec:
-  replicas: 5
+  replicas: 2
   selector:
     matchLabels:
-      app: python-example
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-  minReadySeconds: 5
+      app: flask
+      tier: frontend
+  # The template tells you what pods are used inside the deployment
   template:
     metadata:
       labels:
-        app: python-example
+        app: flask
+        tier: frontend
     spec:
+      # This tells you what docker container should be running inside a pod
       containers:
-      - name: python-example
-        image: <IMAGE>
+      - name: flask
+        image: mrasap/flask
         ports:
-        - containerPort: 80
-        resources:
-          requests:
-            cpu: 100m
-          limits:
-            cpu: 100m
+        - containerPort: 8080
+        # These probes are used to check whether it is still alive
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+          periodSeconds: 30
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+          periodSeconds: 30
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: python-example-service
+  name: frontend
+  annotations:
+    service.beta.kubernetes.io/do-loadbalancer-protocol: "http"
+  labels:
+    app: flask
+    tier: frontend
 spec:
   type: LoadBalancer
   ports:
-    - name: http
-      protocol: TCP
-      port: 80
-      targetPort: 80
+  - port: 8080
+  # The selector tells the service on which deployment it should be applied
   selector:
-    app: python-example
+    app: flask
+    tier: frontend
