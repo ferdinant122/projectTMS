@@ -56,7 +56,7 @@ jobs:
       run: doctl registry login --expiry-seconds 1200
 
     - name: Push image to DigitalOcean Container Registry
-      run: docker push ${{ secrets.REGISTRY_NAME }}/python-example:$(echo $GITHUB_SHA | head -c7)
+      run: docker push ${{ secrets.REGISTRY_NAME }}/python-example:prod
 
     # Deploy to DigitalOCcean Kubernetes.
   deploy_on_DO:
