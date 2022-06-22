@@ -10,7 +10,7 @@ on:
     tags:
       - "v*"
 jobs:
-  docker:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -32,6 +32,11 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
 
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          
       # Build a Docker image of your application in your registry and tag the image with the $GITHUB_SHA.
       - name: Build container image
         run: docker build -t ${{ secrets.REGISTRY_NAME }}/sampleapp:$(echo $GITHUB_SHA | head -c7) .
@@ -41,12 +46,6 @@ jobs:
 
       - name: Push image to DigitalOcean Container Registry
         run: docker push ${{ secrets.REGISTRY_NAME }}/sampleapp:$(echo $GITHUB_SHA | head -c7)
-
-
-      - name: Install doctl
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
       # Save the right kuberenetes context depending on the branch name
       - name: Save DigitalOcean kubeconfig Staging
