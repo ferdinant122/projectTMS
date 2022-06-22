@@ -1,8 +1,14 @@
-FROM python:3.6
-LABEL maintainer="lorenz.vanthillo@gmail.com"
-COPY . /app
+# Use an official Python runtime as a parent image
+FROM python:slim
+
+# Set the working directory to /app
 WORKDIR /app
-RUN pip install -r requirements.txt
-EXPOSE 8080
-ENTRYPOINT ["python"]
-CMD ["app/app.py"]
+
+# Copy the current directory contents into the container at /app
+ADD . /app
+
+# Make port 80 available to the world outside this container
+EXPOSE 80
+
+# Run server.py when the container launches
+CMD ["python", "server.py"]
