@@ -221,38 +221,3 @@ That's all! You great!
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-### Finish
-That's all! You great!
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
