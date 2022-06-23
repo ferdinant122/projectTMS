@@ -10,11 +10,9 @@ on:
   pull_request:
   
   push:
-    branches:
-      - main
     tags:
-      - v0.*
-      - v1.*
+      - '*'
+
     paths:
       - 'config/**'
       - 'server.py'
