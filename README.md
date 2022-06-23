@@ -1,3 +1,5 @@
+# GitHub Buttons [![Build Status](https://img.shields.io/github/workflow/status/mdo/github-buttons/CI/master?label=CI&logo=github)](https://github.com/mdo/github-buttons/actions?query=workflow%3ACI+branch%3Amaster) 
+
 # python-flask-docker11
 Basic Python Flask app in Docker which prints the hostname and IP of the container
 
