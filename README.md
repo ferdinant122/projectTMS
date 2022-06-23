@@ -1,6 +1,7 @@
 # CI/CD App on DigitalOcean with Github Actions
 #### Created by Dmitry Kozhel
 
+![example workflow](https://github.com/ferdinant122/projectTMS/actions/workflows/workflow.yml/badge.svg)
 
 
 ## Scheme
