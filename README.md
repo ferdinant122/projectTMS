@@ -109,7 +109,7 @@ App in DigitalOcean Registry
 
 after app push on registry start deploing on DigitalOcean
 
-All instructions  are in ``config/deployment.yml```
+All instructions  are in ``config/deployment.yml``
 
 The file has two parts:
 
