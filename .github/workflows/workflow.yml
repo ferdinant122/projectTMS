@@ -11,10 +11,7 @@ on:
   
   push:
     branches:
-      - main
-    tags:
-      - v0.*
-      - v1.*
+      - Dev
     paths:
       - 'config/**'
       - 'server.py'
@@ -61,7 +58,7 @@ jobs:
       run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|${{ secrets.REGISTRY_NAME }}/python-example:'${TAG}'|' $GITHUB_WORKSPACE/config/deployment.yml
 
     - name: Save DigitalOcean kubeconfig with short-lived credentials
-      run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ secrets.CLUSTER_NAME_PROD }}
+      run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 ${{ secrets.CLUSTER_NAME_DEV }}
     
     - name: Deploy to DigitalOcean Kubernetes
       run: kubectl apply -f $GITHUB_WORKSPACE/config/deployment.yml
