@@ -1,5 +1,5 @@
 # CI/CD App on DigitalOcean with Github Actions
-#### Created by Dmitry Kozhel
+#### Created by Dmitry Kozhel 
 
 
 ## Scheme
